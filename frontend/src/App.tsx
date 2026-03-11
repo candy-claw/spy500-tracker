@@ -1,24 +1,22 @@
 import { useState, useEffect } from 'react';
-import { getStocksWithPrices, triggerFetch } from './services/api';
-import type { StockWithPrice } from './services/api';
-import StockTable from './components/StockTable';
-import Movers from './components/Movers';
-import { Layout, Typography, Button, Card, Row, Col, Statistic, Spin, Alert } from 'antd';
-import { ReloadOutlined, StockOutlined } from '@ant-design/icons';
+import { getStocks } from './services/api';
+import type { Stock } from './services/api';
+import { Layout, Typography, Card, Table, Input, Tag, Row, Col, Statistic, Spin, Alert } from 'antd';
+import { SearchOutlined, StockOutlined } from '@ant-design/icons';
 
 const { Header, Content } = Layout;
 const { Title } = Typography;
 
 export default function Dashboard() {
-  const [stocks, setStocks] = useState<StockWithPrice[]>([]);
+  const [stocks, setStocks] = useState<Stock[]>([]);
   const [loading, setLoading] = useState(true);
-  const [fetching, setFetching] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [search, setSearch] = useState('');
 
   const loadData = async () => {
     try {
       setLoading(true);
-      const data = await getStocksWithPrices();
+      const data = await getStocks();
       setStocks(data);
       setError(null);
     } catch (e) {
@@ -28,21 +26,43 @@ export default function Dashboard() {
     }
   };
 
-  const handleFetch = async () => {
-    try {
-      setFetching(true);
-      await triggerFetch();
-      await loadData();
-    } catch (e) {
-      setError(e instanceof Error ? e.message : 'Failed to fetch data');
-    } finally {
-      setFetching(false);
-    }
-  };
-
   useEffect(() => {
     loadData();
   }, []);
+
+  const filtered = stocks.filter(s => 
+    s.symbol.toLowerCase().includes(search.toLowerCase()) ||
+    (s.name?.toLowerCase().includes(search.toLowerCase()) ?? false)
+  );
+
+  const columns = [
+    {
+      title: 'Symbol',
+      dataIndex: 'symbol',
+      key: 'symbol',
+      sorter: (a: Stock, b: Stock) => a.symbol.localeCompare(b.symbol),
+      render: (text: string) => <Tag color="blue" style={{ fontWeight: 'bold' }}>{text}</Tag>,
+    },
+    {
+      title: 'Name',
+      dataIndex: 'name',
+      key: 'name',
+      ellipsis: true,
+    },
+    {
+      title: 'Sector',
+      dataIndex: 'sector',
+      key: 'sector',
+      render: (text: string) => text ? <Tag>{text}</Tag> : <Tag>-</Tag>,
+    },
+    {
+      title: 'Industry',
+      dataIndex: 'industry',
+      key: 'industry',
+      ellipsis: true,
+      render: (text: string) => text || '-',
+    },
+  ];
 
   if (loading) {
     return (
@@ -56,20 +76,9 @@ export default function Dashboard() {
 
   return (
     <Layout style={{ minHeight: '100vh', background: '#f0f2f5' }}>
-      <Header style={{ background: '#001529', padding: '0 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <StockOutlined style={{ fontSize: '28px', color: '#fff' }} />
-          <Title level={3} style={{ margin: 0, color: '#fff' }}>S&P 500 Stock Tracker</Title>
-        </div>
-        <Button 
-          type="primary" 
-          icon={<ReloadOutlined />} 
-          onClick={handleFetch}
-          loading={fetching}
-          size="large"
-        >
-          {fetching ? 'Refreshing...' : 'Refresh Data'}
-        </Button>
+      <Header style={{ background: '#001529', padding: '0 24px', display: 'flex', alignItems: 'center' }}>
+        <StockOutlined style={{ fontSize: '28px', color: '#fff', marginRight: '12px' }} />
+        <Title level={3} style={{ margin: 0, color: '#fff' }}>S&P 500 Stock Tracker</Title>
       </Header>
 
       <Content style={{ padding: '24px' }}>
@@ -93,8 +102,8 @@ export default function Dashboard() {
           <Col xs={24} sm={8}>
             <Card>
               <Statistic 
-                title="Stocks with Data" 
-                value={stocks.filter(s => s.dailyPrice).length} 
+                title="With Sector Info" 
+                value={stocks.filter(s => s.sector).length} 
                 valueStyle={{ color: '#1890ff' }} 
               />
             </Card>
@@ -103,17 +112,30 @@ export default function Dashboard() {
             <Card>
               <Statistic 
                 title="Last Updated" 
-                value={stocks[0]?.dailyPrice?.tradeDate || 'N/A'} 
+                value="2026-03-03" 
                 valueStyle={{ color: '#722ed1' }} 
               />
             </Card>
           </Col>
         </Row>
 
-        <Movers />
-
-        <Card title="All S&P 500 Stocks" style={{ marginTop: '24px' }}>
-          <StockTable stocks={stocks} />
+        <Card title="All S&P 500 Stocks">
+          <Input
+            placeholder="Search stocks..."
+            prefix={<SearchOutlined />}
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            style={{ marginBottom: '16px', maxWidth: '300px' }}
+            allowClear
+          />
+          <Table
+            columns={columns}
+            dataSource={filtered}
+            rowKey="symbol"
+            pagination={{ pageSize: 20, showSizeChanger: true, showTotal: (total) => `Total ${total} stocks` }}
+            scroll={{ x: 800 }}
+            size="middle"
+          />
         </Card>
       </Content>
     </Layout>

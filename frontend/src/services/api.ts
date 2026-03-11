@@ -61,7 +61,7 @@ export async function getLatestPrice(symbol: string): Promise<DailyPrice | null>
 
 // Trigger data fetch
 export async function triggerFetch(): Promise<void> {
-  const res = await fetch(`${API_BASE}/stocks/fetch`, { method: 'POST' });
+  const res = await fetch(`${API_BASE}/stocks/fetch-prices`, { method: 'POST' });
   if (!res.ok) throw new Error('Failed to trigger fetch');
 }
 
