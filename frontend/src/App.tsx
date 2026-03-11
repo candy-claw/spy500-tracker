@@ -1,17 +1,19 @@
 import { useState, useEffect } from 'react';
 import { getStocks } from './services/api';
 import type { Stock } from './services/api';
-import { Layout, Typography, Card, Table, Input, Tag, Row, Col, Statistic, Spin, Alert } from 'antd';
-import { SearchOutlined, StockOutlined } from '@ant-design/icons';
+import { Layout, Typography, Card, Table, Input, Tag, Row, Col, Statistic, Spin, Alert, Drawer } from 'antd';
+import { SearchOutlined, StockOutlined, InfoCircleOutlined } from '@ant-design/icons';
 
 const { Header, Content } = Layout;
-const { Title } = Typography;
+const { Title, Text } = Typography;
 
 export default function Dashboard() {
   const [stocks, setStocks] = useState<Stock[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState('');
+  const [selectedStock, setSelectedStock] = useState<Stock | null>(null);
+  const [detailDrawerOpen, setDetailDrawerOpen] = useState(false);
 
   const loadData = async () => {
     try {
@@ -34,6 +36,11 @@ export default function Dashboard() {
     s.symbol.toLowerCase().includes(search.toLowerCase()) ||
     (s.name?.toLowerCase().includes(search.toLowerCase()) ?? false)
   );
+
+  const handleRowClick = (record: Stock) => {
+    setSelectedStock(record);
+    setDetailDrawerOpen(true);
+  };
 
   const columns = [
     {
@@ -111,8 +118,8 @@ export default function Dashboard() {
           <Col xs={24} sm={8}>
             <Card>
               <Statistic 
-                title="Last Updated" 
-                value="2026-03-03" 
+                title="Data Updated" 
+                value="2026-03-11" 
                 valueStyle={{ color: '#722ed1' }} 
               />
             </Card>
@@ -135,9 +142,74 @@ export default function Dashboard() {
             pagination={{ pageSize: 20, showSizeChanger: true, showTotal: (total) => `Total ${total} stocks` }}
             scroll={{ x: 800 }}
             size="middle"
+            onRow={(record) => ({
+              onClick: () => handleRowClick(record),
+              style: { cursor: 'pointer' }
+            })}
           />
         </Card>
       </Content>
+
+      <Drawer
+        title={<><InfoCircleOutlined style={{ marginRight: 8 }} />Stock Detail</>}
+        placement="right"
+        width={400}
+        onClose={() => setDetailDrawerOpen(false)}
+        open={detailDrawerOpen}
+      >
+        {selectedStock && (
+          <div>
+            <Card style={{ marginBottom: '16px', background: '#f0f5ff' }}>
+              <Title level={4}>{selectedStock.symbol}</Title>
+              <Text type="secondary">{selectedStock.name || selectedStock.companyName || selectedStock.symbol}</Text>
+            </Card>
+
+            <Row gutter={[16, 16]}>
+              <Col span={12}>
+                <Card size="small">
+                  <Statistic 
+                    title="Market Cap" 
+                    value={selectedStock.marketCap || '-'} 
+                    valueStyle={{ fontSize: '18px' }}
+                  />
+                </Card>
+              </Col>
+              <Col span={12}>
+                <Card size="small">
+                  <Statistic 
+                    title="P/E Ratio" 
+                    value={(selectedStock as any).peRatio || '-'} 
+                    valueStyle={{ fontSize: '18px' }}
+                  />
+                </Card>
+              </Col>
+              <Col span={12}>
+                <Card size="small">
+                  <Statistic 
+                    title="EPS" 
+                    value={((selectedStock as any).eps ? '$' + (selectedStock as any).eps : '-')} 
+                    valueStyle={{ fontSize: '18px' }}
+                  />
+                </Card>
+              </Col>
+              <Col span={12}>
+                <Card size="small">
+                  <Statistic 
+                    title="Volume" 
+                    value={((selectedStock as any).volume || '-')} 
+                    valueStyle={{ fontSize: '18px' }}
+                  />
+                </Card>
+              </Col>
+            </Row>
+
+            <Card style={{ marginTop: '16px' }} size="small">
+              <p><strong>Sector:</strong> {selectedStock.sector || '-'}</p>
+              <p><strong>Industry:</strong> {selectedStock.industry || '-'}</p>
+            </Card>
+          </div>
+        )}
+      </Drawer>
     </Layout>
   );
 }

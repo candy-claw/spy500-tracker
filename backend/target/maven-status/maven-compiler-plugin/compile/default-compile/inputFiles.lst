@@ -7,7 +7,6 @@
 /Users/canday/projects/stock500/backend/src/main/java/com/stock500/backend/controller/StockController.java
 /Users/canday/projects/stock500/backend/src/main/java/com/stock500/backend/service/StockDataService.java
 /Users/canday/projects/stock500/backend/src/main/java/com/spy500/tracker/entity/Stock.java
-/Users/canday/projects/stock500/backend/src/main/java/com/stock500/backend/Stock500Application.java
 /Users/canday/projects/stock500/backend/src/main/java/com/stock500/backend/config/CorsConfig.java
 /Users/canday/projects/stock500/backend/src/main/java/com/stock500/backend/entity/Stock.java
 /Users/canday/projects/stock500/backend/src/main/java/com/stock500/backend/config/JacksonConfig.java

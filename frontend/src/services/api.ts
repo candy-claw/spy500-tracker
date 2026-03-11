@@ -1,11 +1,19 @@
 const API_BASE = '/api';
 
 export interface Stock {
+  id: number;
   symbol: string;
-  name: string;
-  sector: string;
-  industry: string;
+  name?: string;
+  companyName?: string;
+  sector: string | null;
+  industry: string | null;
+  marketCap: string | null;
+  peRatio: string | null;
+  eps: string | null;
+  volume: string | null;
+  dividend: string | null;
   createdAt: string;
+  updatedAt: string;
 }
 
 export interface DailyPrice {
