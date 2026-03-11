@@ -1,0 +1,9 @@
+/Users/canday/project/SPY500Tracker/backend/src/main/java/com/spy500/tracker/repository/StockRepository.java
+/Users/canday/project/SPY500Tracker/backend/src/main/java/com/spy500/tracker/repository/StockPriceRepository.java
+/Users/canday/project/SPY500Tracker/backend/src/main/java/com/spy500/tracker/controller/StockController.java
+/Users/canday/project/SPY500Tracker/backend/src/main/java/com/spy500/tracker/service/StockPriceService.java
+/Users/canday/project/SPY500Tracker/backend/src/main/java/com/spy500/tracker/Spy500TrackerApplication.java
+/Users/canday/project/SPY500Tracker/backend/src/main/java/com/spy500/tracker/entity/Stock.java
+/Users/canday/project/SPY500Tracker/backend/src/main/java/com/spy500/tracker/controller/AnalysisController.java
+/Users/canday/project/SPY500Tracker/backend/src/main/java/com/spy500/tracker/entity/StockPrice.java
+/Users/canday/project/SPY500Tracker/backend/src/main/java/com/spy500/tracker/service/StockService.java

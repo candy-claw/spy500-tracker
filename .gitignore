@@ -1,7 +1,16 @@
-node_modules/
-target/
-dist/
+# Build output
+backend/target/
+frontend/node_modules/
+frontend/build/
+
+# IDE
 .idea/
+.vscode/
 *.iml
+
+# Logs
 *.log
 
+# OS
+.DS_Store
+Thumbs.db
