@@ -1,12 +1,15 @@
 package com.stock500.backend.entity;
 
 import jakarta.persistence.*;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "stocks")
+@Data
+@Builder
 public class Stock {
 
     @Id
@@ -22,56 +25,45 @@ public class Stock {
     @Column(name = "industry", length = 200)
     private String industry;
 
+    @Column(name = "market_cap_str", length = 50)
+    private String marketCap;
+
+    @Column(name = "pe_ratio", length = 20)
+    private String peRatio;
+
+    @Column(name = "eps", length = 20)
+    private String eps;
+
+    @Column(name = "volume", length = 30)
+    private String volume;
+
+    @Column(name = "dividend", length = 20)
+    private String dividend;
+
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
+    @CreationTimestamp
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
     public Stock() {}
 
-    public Stock(String symbol, String name, String sector, String industry) {
+    @Builder
+    public Stock(String symbol, String name, String sector, String industry, String marketCap, 
+                 String peRatio, String eps, String volume, String dividend,
+                 LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.symbol = symbol;
         this.name = name;
         this.sector = sector;
         this.industry = industry;
-    }
-
-    public String getSymbol() { return symbol; }
-    public void setSymbol(String symbol) { this.symbol = symbol; }
-
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
-
-    public String getSector() { return sector; }
-    public void setSector(String sector) { this.sector = sector; }
-
-    public String getIndustry() { return industry; }
-    public void setIndustry(String industry) { this.industry = industry; }
-
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
-
-    public static StockBuilder builder() {
-        return new StockBuilder();
-    }
-
-    public static class StockBuilder {
-        private String symbol;
-        private String name;
-        private String sector;
-        private String industry;
-
-        public StockBuilder symbol(String symbol) { this.symbol = symbol; return this; }
-        public StockBuilder name(String name) { this.name = name; return this; }
-        public StockBuilder sector(String sector) { this.sector = sector; return this; }
-        public StockBuilder industry(String industry) { this.industry = industry; return this; }
-
-        public Stock build() {
-            Stock stock = new Stock();
-            stock.symbol = this.symbol;
-            stock.name = this.name;
-            stock.sector = this.sector;
-            stock.industry = this.industry;
-            return stock;
-        }
+        this.marketCap = marketCap;
+        this.peRatio = peRatio;
+        this.eps = eps;
+        this.volume = volume;
+        this.dividend = dividend;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 }
