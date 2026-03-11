@@ -1,9 +1,9 @@
+com/spy500/tracker/entity/Stock.class
 com/spy500/tracker/Spy500TrackerApplication.class
-com/spy500/tracker/controller/StockController.class
 com/spy500/tracker/service/StockService.class
 com/spy500/tracker/repository/StockRepository.class
-com/spy500/tracker/controller/AnalysisController.class
-com/spy500/tracker/entity/Stock.class
+com/spy500/tracker/repository/StockPriceRepository.class
+com/spy500/tracker/controller/StockController.class
 com/spy500/tracker/service/StockPriceService.class
 com/spy500/tracker/entity/StockPrice.class
-com/spy500/tracker/repository/StockPriceRepository.class
+com/spy500/tracker/controller/AnalysisController.class

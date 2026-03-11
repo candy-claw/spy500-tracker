@@ -1,4 +1,4 @@
-const API_BASE = 'http://localhost:8080/api';
+const API_BASE = '/api';
 
 export interface Stock {
   symbol: string;
@@ -70,6 +70,28 @@ export async function getMovers(limit: number = 10): Promise<StockWithPrice[]> {
   const res = await fetch(`${API_BASE}/stocks/movers?limit=${limit}`);
   if (!res.ok) throw new Error('Failed to fetch movers');
   return res.json();
+}
+
+// Get top gainers
+export async function getTopGainers(limit: number = 10): Promise<StockWithPrice[]> {
+  try {
+    const res = await fetch(`${API_BASE}/analysis/top-gainers?limit=${limit}`);
+    if (!res.ok) throw new Error('Failed to fetch gainers');
+    return res.json();
+  } catch {
+    return [];
+  }
+}
+
+// Get top losers
+export async function getTopLosers(limit: number = 10): Promise<StockWithPrice[]> {
+  try {
+    const res = await fetch(`${API_BASE}/analysis/top-losers?limit=${limit}`);
+    if (!res.ok) throw new Error('Failed to fetch losers');
+    return res.json();
+  } catch {
+    return [];
+  }
 }
 
 // Format market cap (e.g., "3826.42B" -> "3.8T")
